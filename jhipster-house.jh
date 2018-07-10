@@ -1,0 +1,89 @@
+  /* PHOTO */
+
+  entity Photo {
+      name String required,
+      description String,
+      photo ImageBlob required,
+      thumbnail Boolean required
+  }
+
+  entity Property {
+      title String required
+      created ZonedDateTime required,
+      updated ZonedDateTime,
+      description TextBlob,
+      transaction TransactionType required,
+      reference String required,
+      priceSell Double,
+      priceRent Double,
+      priceTransfer Double,
+      yearConstruction Integer min(500),
+      newCreation Boolean,
+      visible Boolean,
+      surface Integer
+      // CATEGORY
+
+  }
+     enum TransactionType {
+      RENT, BUY, TRANSFER, RENT_BUY
+  }
+
+
+  entity House {
+      title String required
+      created ZonedDateTime required,
+      updated ZonedDateTime,
+      description TextBlob,
+      reference String required,
+      priceSell Double,
+      priceRent Double,
+      priceTransfer Double,
+      yearConstruction Integer min(500),
+      newCreation Boolean,
+      visible Boolean,
+      surface Integer
+      // CATEGORY
+
+  }
+
+   entity Project {
+      projectName String required
+      created ZonedDateTime required,     
+      description TextBlob,
+      reference String required
+
+  }
+
+
+
+ relationship OneToMany {
+      /*
+      * Property is owner of the relationship
+      * One property has many photos
+      * From property can choose photos
+      * GET/PUT/POST property will include array photos
+      */
+      Property{photo(name)} to Photo{property}
+  }
+
+relationship ManyToOne{
+    /*
+      * Property is owner of the relationship
+      * many Photo for a house
+      * From photo can choose house
+      * GET/PUT/POST property will include house detail
+      */
+    Photo{house(title)} to House
+}
+
+  relationship ManyToMany{
+      Photo{project(projectName)} to Project{photo(name)}
+  }
+
+
+
+service House,Project with serviceImpl
+
+service Property, Photo with serviceClass
+
+filter House, Project, Photo, Property
